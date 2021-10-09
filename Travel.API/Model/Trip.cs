@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Travel.API.Model
+{
+    public class Trip
+    {
+        public int TripId { get; set; }
+        public string Name { get; set; }
+        public string StartLocation { get; set; }
+        public string EndLocation { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public ICollection<City> Cities { get; set; }
+    }
+}
