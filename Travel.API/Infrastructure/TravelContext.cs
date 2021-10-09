@@ -14,6 +14,7 @@ namespace Travel.API.Infrastructure
         public DbSet<City> TravelCities { get; set; }
         public DbSet<Boarding> TravelBoardings { get; set; }
         public DbSet<Activity> TravelActivities { get; set; }
+        public DbSet<Flight> TravelFlights { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{

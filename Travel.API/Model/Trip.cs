@@ -7,10 +7,9 @@ namespace Travel.API.Model
     {
         public int TripId { get; set; }
         public string Name { get; set; }
-        public string StartLocation { get; set; }
-        public string EndLocation { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public ICollection<City> Cities { get; set; }
+        public ICollection<Flight> Flights { get; set; }
     }
 }
