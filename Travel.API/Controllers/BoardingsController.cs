@@ -29,12 +29,17 @@ namespace Travel.API.Controllers
                 return NotFound();
             }
 
-            return boardings;
+            return Ok(boardings);
         }
 
         [HttpGet("{cityId}")]
         public async Task<ActionResult<List<Boarding>>> GetBoardingsByCityId(int cityId)
         {
+            if(cityId <= 0)
+            {
+                return BadRequest();
+            }
+
             var boardings = await _context.TravelBoardings.Where(b => b.CityId == cityId).ToListAsync();
 
             if(boardings == null)
@@ -42,16 +47,60 @@ namespace Travel.API.Controllers
                 return NotFound();
             }
 
-            return boardings;
+            return Ok(boardings);
+        }
+
+        [HttpGet("{boardingId}")]
+        public async Task<ActionResult<Boarding>> GetBoardingByBoardingId(int boardingId)
+        {
+            if(boardingId <= 0)
+            {
+                return BadRequest();
+            }
+
+            var boarding = await _context.TravelBoardings.Where(i => i.BoardingId == boardingId).FirstOrDefaultAsync();
+
+            if(boarding == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(boarding);
         }
 
         [HttpPost]
         public async Task<ActionResult<int>> CreateBoarding([FromBody] Boarding boarding)
         {
+            if(boarding == null)
+            {
+                return BadRequest();
+            }
+
             _context.Add(boarding);
             await _context.SaveChangesAsync();
 
-            return boarding.BoardingId;
+            return Ok(boarding.BoardingId);
+        }
+
+        [HttpDelete("{boardingId}")]
+        public async Task<ActionResult<int>> DeleteBoarding(int boardingId)
+        {
+            if(boardingId <= 0)
+            {
+                return BadRequest();
+            }
+
+            var boarding = await _context.TravelBoardings.Where(i => i.BoardingId == boardingId).FirstOrDefaultAsync();
+
+            if(boarding == null)
+            {
+                return NotFound();
+            }
+
+            _context.TravelBoardings.Remove(boarding);
+            await _context.SaveChangesAsync();
+
+            return Ok(0);
         }
     }
 }

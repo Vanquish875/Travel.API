@@ -25,23 +25,35 @@ namespace Travel.API.Controllers
             var trips = await _context.TravelTrips.ToListAsync();
 
             if (trips == null)
+            {
                 return NotFound();
+            }               
 
-            return trips;
+            return Ok(trips);
         }
 
         [HttpPost]
         public async Task<ActionResult<int>> CreateTrip([FromBody] Trip trip)
         {
+            if(trip == null)
+            {
+                return BadRequest();
+            }
+
             _context.TravelTrips.Add(trip);
             await _context.SaveChangesAsync();
 
-            return trip.TripId;
+            return Ok(trip.TripId);
         }
 
         [HttpGet("{tripId}")]
         public async Task<ActionResult<Trip>> GetTripByID(int tripId)
         {
+            if(tripId <= 0)
+            {
+                return BadRequest();
+            }
+
             var trip = await _context.TravelTrips
                 .Where(t => t.TripId == tripId)
                 .SingleOrDefaultAsync();
@@ -51,25 +63,30 @@ namespace Travel.API.Controllers
                 return NotFound();
             }
 
-            return trip;
+            return Ok(trip);
         }
 
         [HttpDelete("{tripId}")]
         public async Task<ActionResult<int>> DeleteTrip(int tripId)
         {
+            if(tripId <= 0)
+            {
+                return BadRequest();
+            }
+
             var trip = await _context.TravelTrips
                 .Where(t => t.TripId == tripId)
                 .SingleOrDefaultAsync();
-            
-            _context.Remove(trip);
-            _context.SaveChanges();
 
             if(trip == null)
             {
                 return NotFound();
             }
 
-            return 0;
+            _context.Remove(trip);
+            await _context.SaveChangesAsync();
+            
+            return Ok(0);
         }
     }
 }
