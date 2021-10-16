@@ -77,6 +77,20 @@ namespace Travel.API.Controllers
             return Ok(flight.FlightId);
         }
 
+        [HttpPut]
+        public async Task<ActionResult<int>> UpdateFlight([FromBody] Flight flight)
+        {
+            if(flight == null)
+            {
+                return BadRequest();
+            }
+
+            _context.TravelFlights.Add(flight);
+            await _context.SaveChangesAsync();
+
+            return Ok(flight.FlightId);
+        }
+
         [HttpDelete("{flightId}")]
         public async Task<ActionResult<int>> DeleteFlight(int flightId)
         {

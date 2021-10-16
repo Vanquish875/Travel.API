@@ -46,6 +46,20 @@ namespace Travel.API.Controllers
             return Ok(trip.TripId);
         }
 
+        [HttpPut]
+        public async Task<ActionResult<int>> UpdateTrip([FromBody] Trip trip)
+        {
+            if(trip == null)
+            {
+                return BadRequest();
+            }
+
+            _context.TravelTrips.Update(trip);
+            await _context.SaveChangesAsync();
+
+            return Ok(trip.TripId);
+        }
+
         [HttpGet("{tripId}")]
         public async Task<ActionResult<Trip>> GetTripByID(int tripId)
         {

@@ -58,7 +58,21 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.Add(activity);
+            _context.TravelActivities.Add(activity);
+            await _context.SaveChangesAsync();
+
+            return Ok(activity.ActivityId);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<int>> UpdateActivity([FromBody] Activity activity)
+        {
+            if(activity == null)
+            {
+                return BadRequest();
+            }
+
+            _context.TravelActivities.Update(activity);
             await _context.SaveChangesAsync();
 
             return Ok(activity.ActivityId);

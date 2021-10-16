@@ -82,6 +82,20 @@ namespace Travel.API.Controllers
             return Ok(city.CityId);
         }
 
+        [HttpPut]
+        public async Task<ActionResult<int>> UpdateCity([FromBody] City city)
+        {
+            if(city == null)
+            {
+                return BadRequest();
+            }
+
+            _context.TravelCities.Update(city);
+            await _context.SaveChangesAsync();
+
+            return Ok(city.CityId);
+        }
+
         [HttpDelete("{cityId}")]
         public async Task<ActionResult<int>> DeleteCity(int cityId)
         {

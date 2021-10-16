@@ -76,7 +76,21 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.Add(boarding);
+            _context.TravelBoardings.Add(boarding);
+            await _context.SaveChangesAsync();
+
+            return Ok(boarding.BoardingId);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<int>> UpdateBoarding([FromBody] Boarding boarding)
+        {
+            if(boarding == null)
+            {
+                return BadRequest();
+            }
+
+            _context.TravelBoardings.Update(boarding);
             await _context.SaveChangesAsync();
 
             return Ok(boarding.BoardingId);
