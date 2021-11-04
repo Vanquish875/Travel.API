@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace Travel.DAL.Services
+namespace Travel.BLL.Services
 {
-    public class FlightService
+    public class FlightService : IFlightService
     {
         private readonly TravelContext _context;
 
@@ -20,21 +18,29 @@ namespace Travel.DAL.Services
 
         public async Task<List<Flight>> GetAllFlights()
         {
-            var flights = await _context.TravelFlights.ToListAsync();
+            var flights = await _context.TravelFlights
+                .AsNoTracking()
+                .ToListAsync();
 
             return flights;
         }
 
         public async Task<List<Flight>> GetFlightsByTrip(int id)
         {
-            var flights = await _context.TravelFlights.Where(i => i.TripId == id).ToListAsync();
+            var flights = await _context.TravelFlights
+                .Where(i => i.TripId == id)
+                .AsNoTracking()
+                .ToListAsync();
 
             return flights;
         }
 
         public async Task<Flight> GetFlightByFlightID(int id)
         {
-            var flight = await _context.TravelFlights.Where(i => i.FlightId == id).FirstOrDefaultAsync();
+            var flight = await _context.TravelFlights
+                .Where(i => i.FlightId == id)
+                .AsNoTracking()
+                .FirstAsync();
 
             return flight;
         }
@@ -57,16 +63,18 @@ namespace Travel.DAL.Services
 
         public async Task<int> DeleteFlight(int id)
         {
-            var flight = await _context.TravelFlights.Where(i => i.FlightId == id).FirstOrDefaultAsync();
+            var flight = await _context.TravelFlights
+                .Where(i => i.FlightId == id)
+                .FirstAsync();
 
-            if(flight == null)
+            if (flight == null)
             {
                 return 0;
             }
 
             _context.TravelFlights.Remove(flight);
             await _context.SaveChangesAsync();
-            
+
             return flight.FlightId;
         }
     }

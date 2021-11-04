@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace Travel.DAL.Services
+namespace Travel.BLL.Services
 {
     public class TripService : ITripService
     {
@@ -18,14 +18,19 @@ namespace Travel.DAL.Services
 
         public async Task<List<Trip>> GetAllTrips()
         {
-            var trips = await _context.TravelTrips.ToListAsync();
+            var trips = await _context.TravelTrips
+                .AsNoTracking()
+                .ToListAsync();
 
             return trips;
         }
 
         public async Task<Trip> GetTripsByID(int id)
         {
-            var trip = await _context.TravelTrips.Where(i => i.TripId == id).FirstOrDefaultAsync();
+            var trip = await _context.TravelTrips
+                .Where(i => i.TripId == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
 
             return trip;
         }
@@ -48,7 +53,9 @@ namespace Travel.DAL.Services
 
         public async Task<int> DeleteTrip(int id)
         {
-            var trip = await _context.TravelTrips.Where(i => i.TripId == id).FirstOrDefaultAsync();
+            var trip = await _context.TravelTrips
+                .Where(i => i.TripId == id)
+                .FirstAsync();
 
             if (trip == null)
             {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Travel.DAL.Models;
 
-namespace Travel.DAL.Services
+namespace Travel.BLL.Interfaces
 {
     public interface ITripService
     {
