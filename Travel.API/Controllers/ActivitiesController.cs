@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Travel.API.Model;
+using Travel.BLL.Interfaces;
+using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class ActivitiesController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly IActivityService _activity;
 
-        public ActivitiesController(TravelContext context)
+        public ActivitiesController(IActivityService activity)
         {
-            _context = context;
+            _activity = activity;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Activity>>> GetAllActivities()
         {
-            var activities = await _context.TravelActivities.ToListAsync();
+            var activities = await _activity.GetAllActivities();
 
             if(activities == null)
             {
@@ -40,7 +38,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var activities = await _context.TravelActivities.Where(a => a.CityId == cityId).ToListAsync();
+            var activities = await _activity.GetActivitiesByCity(cityId);
 
             if(activities == null)
             {
@@ -58,10 +56,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelActivities.Add(activity);
-            await _context.SaveChangesAsync();
-
-            return Ok(activity.ActivityId);
+            await _activity.CreateActivity(activity);
+            
+            return Ok(activity.Id);
         }
 
         [HttpPut]
@@ -72,10 +69,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelActivities.Update(activity);
-            await _context.SaveChangesAsync();
+            await _activity.UpdateActivity(activity);
 
-            return Ok(activity.ActivityId);
+            return Ok(activity.Id);
         }
 
         [HttpDelete("{activityId}")]
@@ -86,16 +82,8 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var activity = await _context.TravelActivities.Where(i => i.ActivityId == activityId).FirstOrDefaultAsync();
-
-            if(activity == null)
-            {
-                return NotFound();
-            }
-
-            _context.TravelActivities.Remove(activity);
-            await _context.SaveChangesAsync();
-
+            await _activity.DeleteActivity(activityId);
+            
             return Ok(0);
         }
     }

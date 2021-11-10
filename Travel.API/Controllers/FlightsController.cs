@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
-using System.Linq;
+using Travel.BLL.Interfaces;
+using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly IFlightService _flight;
 
-        public FlightsController(TravelContext context)
+        public FlightsController(IFlightService flight)
         {
-            _context = context;
+            _flight = flight;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Flight>>> GetAllFlights()
         {
-            var flights = await _context.TravelFlights.ToListAsync();
+            var flights = await _flight.GetAllFlights();
 
             return Ok(flights);
         }
@@ -35,7 +33,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var flights = await _context.TravelFlights.Where(i => i.TripId == tripId).ToListAsync();
+            var flights = await _flight.GetFlightsByTrip(tripId);
 
             if(flights == null)
             {
@@ -53,7 +51,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var flight = await _context.TravelFlights.Where(i => i.FlightId == flightId).FirstOrDefaultAsync();
+            var flight = await _flight.GetFlightByFlightID(flightId);
 
             if(flight == null)
             {
@@ -71,10 +69,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelFlights.Add(flight);
-            await _context.SaveChangesAsync();
+            await _flight.CreateFlight(flight);
 
-            return Ok(flight.FlightId);
+            return Ok(flight.Id);
         }
 
         [HttpPut]
@@ -85,10 +82,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelFlights.Add(flight);
-            await _context.SaveChangesAsync();
+            await _flight.UpdateFlight(flight);
 
-            return Ok(flight.FlightId);
+            return Ok(flight.Id);
         }
 
         [HttpDelete("{flightId}")]
@@ -99,15 +95,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var flight = await _context.TravelFlights.Where(i => i.FlightId == flightId).FirstOrDefaultAsync();
-
-            if(flight == null)
-            {
-                return NotFound();
-            }
-
-            _context.TravelFlights.Remove(flight);
-            await _context.SaveChangesAsync();
+            await _flight.DeleteFlight(flightId);
 
             return Ok(0);
         }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
-using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Interfaces;
+using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class CitiesController : ControllerBase
     {
-        public readonly TravelContext _context;
+        public readonly ICityService _city;
 
-        public CitiesController(TravelContext context)
+        public CitiesController(ICityService city)
         {
-            _context = context;
+            _city = city;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<City>>> GetAllCities()
         {
-            var cities = await _context.TravelCities.ToListAsync();
+            var cities = await _city.GetAllCities();
 
             if(cities == null)
             {
@@ -40,7 +38,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var cities = await _context.TravelCities.Where(c => c.TripId == tripId).ToListAsync();
+            var cities = await _city.GetCitiesByTrip(tripId);
 
             if(cities == null)
             {
@@ -58,7 +56,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var city = await _context.TravelCities.Where(i => i.CityId == cityId).FirstOrDefaultAsync();
+            var city = await _city.GetCityByCity(cityId);
 
             if(city == null)
             {
@@ -76,10 +74,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelCities.Add(city);
-            await _context.SaveChangesAsync();
+            await _city.CreateCity(city);
 
-            return Ok(city.CityId);
+            return Ok(city.Id);
         }
 
         [HttpPut]
@@ -90,10 +87,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelCities.Update(city);
-            await _context.SaveChangesAsync();
+            await _city.UpdateCity(city);
 
-            return Ok(city.CityId);
+            return Ok(city.Id);
         }
 
         [HttpDelete("{cityId}")]
@@ -104,16 +100,8 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var city = await _context.TravelCities.Where(i => i.CityId == cityId).FirstOrDefaultAsync();
-            
-            if(city == null)
-            {
-                return NotFound();
-            }
 
-
-            _context.TravelCities.Remove(city);
-            await _context.SaveChangesAsync();
+            await _city.DeleteCity(cityId);
             
             return Ok(0);
         }

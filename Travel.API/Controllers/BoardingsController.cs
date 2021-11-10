@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
-using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Interfaces;
+using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class BoardingsController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly IBoardingService _boarding;
 
-        public BoardingsController(TravelContext context)
+        public BoardingsController(IBoardingService boarding)
         {
-            _context = context;
+            _boarding = boarding;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Boarding>>> GetAllBoardings()
         {
-            var boardings = await _context.TravelBoardings.ToListAsync();
+            var boardings = await _boarding.GetAllBoardings();
 
             if(boardings == null)
             {
@@ -40,7 +38,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var boardings = await _context.TravelBoardings.Where(b => b.CityId == cityId).ToListAsync();
+            var boardings = await _boarding.GetBoardingsByCity(cityId);
 
             if(boardings == null)
             {
@@ -58,7 +56,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var boarding = await _context.TravelBoardings.Where(i => i.BoardingId == boardingId).FirstOrDefaultAsync();
+            var boarding = await _boarding.GetBoardingByBoardingId(boardingId);
 
             if(boarding == null)
             {
@@ -76,10 +74,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelBoardings.Add(boarding);
-            await _context.SaveChangesAsync();
+            await _boarding.CreateBoarding(boarding);
 
-            return Ok(boarding.BoardingId);
+            return Ok(boarding.Id);
         }
 
         [HttpPut]
@@ -90,10 +87,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelBoardings.Update(boarding);
-            await _context.SaveChangesAsync();
+            await _boarding.UpdateBoarding(boarding);
 
-            return Ok(boarding.BoardingId);
+            return Ok(boarding.Id);
         }
 
         [HttpDelete("{boardingId}")]
@@ -104,15 +100,8 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var boarding = await _context.TravelBoardings.Where(i => i.BoardingId == boardingId).FirstOrDefaultAsync();
 
-            if(boarding == null)
-            {
-                return NotFound();
-            }
-
-            _context.TravelBoardings.Remove(boarding);
-            await _context.SaveChangesAsync();
+            await _boarding.DeleteBoarding(boardingId);
 
             return Ok(0);
         }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
+using Travel.BLL.Interfaces;
 
 namespace Travel.BLL.Services
 {
@@ -38,7 +39,7 @@ namespace Travel.BLL.Services
         public async Task<Activity> GetActivityByActivityId(int activityId)
         {
             var activity = await _context.TravelActivities
-                .Where(i => i.ActivityId == activityId)
+                .Where(i => i.Id == activityId)
                 .AsNoTracking()
                 .FirstAsync();
 
@@ -50,7 +51,7 @@ namespace Travel.BLL.Services
             _context.TravelActivities.Add(activity);
             await _context.SaveChangesAsync();
 
-            return activity.ActivityId;
+            return activity.Id;
         }
 
         public async Task<int> UpdateActivity(Activity activity)
@@ -58,13 +59,13 @@ namespace Travel.BLL.Services
             _context.TravelActivities.Update(activity);
             await _context.SaveChangesAsync();
 
-            return activity.ActivityId;
+            return activity.Id;
         }
 
         public async Task<int> DeleteActivity(int activityId)
         {
             var activity = await _context.TravelActivities
-                .Where(i => i.ActivityId == activityId)
+                .Where(i => i.Id == activityId)
                 .FirstAsync();
 
             _context.Remove(activity);

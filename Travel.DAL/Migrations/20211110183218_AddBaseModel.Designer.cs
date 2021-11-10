@@ -3,28 +3,33 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Travel.API.Infrastructure;
+using Travel.DAL.Infrastructure;
 
-namespace Travel.API.Migrations
+namespace Travel.DAL.Migrations
 {
     [DbContext(typeof(TravelContext))]
-    partial class TravelContextModelSnapshot : ModelSnapshot
+    [Migration("20211110183218_AddBaseModel")]
+    partial class AddBaseModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Travel.API.Model.Activity", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Activity", b =>
                 {
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("ActivityDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ActivityName")
                         .HasColumnType("nvarchar(max)");
@@ -35,25 +40,31 @@ namespace Travel.API.Migrations
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CloseTime")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("CurrentActivityType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("OpenTime")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ActivityId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
                     b.ToTable("TravelActivities");
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Boarding", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Boarding", b =>
                 {
-                    b.Property<int>("BoardingId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -76,19 +87,31 @@ namespace Travel.API.Migrations
                     b.Property<string>("ConfirmationCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("BoardingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
                     b.ToTable("TravelBoardings");
                 });
 
-            modelBuilder.Entity("Travel.API.Model.City", b =>
+            modelBuilder.Entity("Travel.DAL.Models.City", b =>
                 {
-                    b.Property<int>("CityId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -99,7 +122,19 @@ namespace Travel.API.Migrations
                     b.Property<string>("CountryName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartDate")
@@ -108,16 +143,16 @@ namespace Travel.API.Migrations
                     b.Property<int>("TripId")
                         .HasColumnType("int");
 
-                    b.HasKey("CityId");
+                    b.HasKey("Id");
 
                     b.HasIndex("TripId");
 
                     b.ToTable("TravelCities");
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Flight", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Flight", b =>
                 {
-                    b.Property<int>("FlightId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -134,6 +169,9 @@ namespace Travel.API.Migrations
                     b.Property<string>("ConfirmationCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DepartureAirportName")
                         .HasColumnType("nvarchar(max)");
 
@@ -146,6 +184,15 @@ namespace Travel.API.Migrations
                     b.Property<int>("FlightNumber")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
@@ -155,21 +202,33 @@ namespace Travel.API.Migrations
                     b.Property<int>("TripId")
                         .HasColumnType("int");
 
-                    b.HasKey("FlightId");
+                    b.HasKey("Id");
 
                     b.HasIndex("TripId");
 
                     b.ToTable("TravelFlights");
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Trip", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Trip", b =>
                 {
-                    b.Property<int>("TripId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -178,55 +237,55 @@ namespace Travel.API.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("TripId");
+                    b.HasKey("Id");
 
                     b.ToTable("TravelTrips");
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Activity", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Activity", b =>
                 {
-                    b.HasOne("Travel.API.Model.City", null)
+                    b.HasOne("Travel.DAL.Models.City", null)
                         .WithMany("Activities")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Boarding", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Boarding", b =>
                 {
-                    b.HasOne("Travel.API.Model.City", null)
+                    b.HasOne("Travel.DAL.Models.City", null)
                         .WithMany("Boardings")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Travel.API.Model.City", b =>
+            modelBuilder.Entity("Travel.DAL.Models.City", b =>
                 {
-                    b.HasOne("Travel.API.Model.Trip", null)
+                    b.HasOne("Travel.DAL.Models.Trip", null)
                         .WithMany("Cities")
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Flight", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Flight", b =>
                 {
-                    b.HasOne("Travel.API.Model.Trip", null)
+                    b.HasOne("Travel.DAL.Models.Trip", null)
                         .WithMany("Flights")
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Travel.API.Model.City", b =>
+            modelBuilder.Entity("Travel.DAL.Models.City", b =>
                 {
                     b.Navigation("Activities");
 
                     b.Navigation("Boardings");
                 });
 
-            modelBuilder.Entity("Travel.API.Model.Trip", b =>
+            modelBuilder.Entity("Travel.DAL.Models.Trip", b =>
                 {
                     b.Navigation("Cities");
 

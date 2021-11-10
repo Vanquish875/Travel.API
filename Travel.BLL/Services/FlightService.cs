@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
+using Travel.BLL.Interfaces;
 
 namespace Travel.BLL.Services
 {
@@ -38,7 +39,7 @@ namespace Travel.BLL.Services
         public async Task<Flight> GetFlightByFlightID(int id)
         {
             var flight = await _context.TravelFlights
-                .Where(i => i.FlightId == id)
+                .Where(i => i.Id == id)
                 .AsNoTracking()
                 .FirstAsync();
 
@@ -50,7 +51,7 @@ namespace Travel.BLL.Services
             _context.TravelFlights.Add(flight);
             await _context.SaveChangesAsync();
 
-            return flight.FlightId;
+            return flight.Id;
         }
 
         public async Task<int> UpdateFlight(Flight flight)
@@ -58,13 +59,13 @@ namespace Travel.BLL.Services
             _context.TravelFlights.Update(flight);
             await _context.SaveChangesAsync();
 
-            return flight.FlightId;
+            return flight.Id;
         }
 
         public async Task<int> DeleteFlight(int id)
         {
             var flight = await _context.TravelFlights
-                .Where(i => i.FlightId == id)
+                .Where(i => i.Id == id)
                 .FirstAsync();
 
             if (flight == null)
@@ -75,7 +76,7 @@ namespace Travel.BLL.Services
             _context.TravelFlights.Remove(flight);
             await _context.SaveChangesAsync();
 
-            return flight.FlightId;
+            return flight.Id;
         }
     }
 }

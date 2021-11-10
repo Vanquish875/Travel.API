@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Interfaces;
 
 namespace Travel.BLL.Services
 {
@@ -40,7 +39,7 @@ namespace Travel.BLL.Services
         public async Task<City> GetCityByCity(int cityId)
         {
             var city = await _context.TravelCities
-                .Where(i => i.CityId == cityId)
+                .Where(i => i.Id == cityId)
                 .AsNoTracking()
                 .FirstAsync();
 
@@ -52,7 +51,7 @@ namespace Travel.BLL.Services
             _context.TravelCities.Add(city);
             await _context.SaveChangesAsync();
 
-            return city.CityId;
+            return city.Id;
         }
 
         public async Task<int> UpdateCity(City city)
@@ -60,13 +59,13 @@ namespace Travel.BLL.Services
             _context.TravelCities.Update(city);
             await _context.SaveChangesAsync();
 
-            return city.CityId;
+            return city.Id;
         }
 
         public async Task<int> DeleteCity(int cityId)
         {
             var city = await _context.TravelCities
-                .Where(i => i.CityId == cityId)
+                .Where(i => i.Id == cityId)
                 .FirstAsync();
 
             _context.TravelCities.Remove(city);

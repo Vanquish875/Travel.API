@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
+using Travel.BLL.Interfaces;
+using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class TripsController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly ITripService _trip;
 
-        public TripsController(TravelContext context)
+        public TripsController(ITripService trip)
         {
-            _context = context;
+            _trip = trip;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Trip>>> GetAllTrips()
         {
-            var trips = await _context.TravelTrips.ToListAsync();
+            var trips = await _trip.GetAllTrips();
 
             if (trips == null)
             {
@@ -40,10 +38,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelTrips.Add(trip);
-            await _context.SaveChangesAsync();
+            await _trip.CreateTrip(trip);
 
-            return Ok(trip.TripId);
+            return Ok(trip.Id);
         }
 
         [HttpPut]
@@ -54,10 +51,9 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            _context.TravelTrips.Update(trip);
-            await _context.SaveChangesAsync();
+            await _trip.UpdateTrip(trip);
 
-            return Ok(trip.TripId);
+            return Ok(trip.Id);
         }
 
         [HttpGet("{tripId}")]
@@ -68,9 +64,7 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var trip = await _context.TravelTrips
-                .Where(t => t.TripId == tripId)
-                .SingleOrDefaultAsync();
+            var trip = await _trip.GetTripsByID(tripId);
 
             if(trip == null)
             {
@@ -88,17 +82,8 @@ namespace Travel.API.Controllers
                 return BadRequest();
             }
 
-            var trip = await _context.TravelTrips
-                .Where(t => t.TripId == tripId)
-                .SingleOrDefaultAsync();
 
-            if(trip == null)
-            {
-                return NotFound();
-            }
-
-            _context.Remove(trip);
-            await _context.SaveChangesAsync();
+            await _trip.DeleteTrip(tripId);
             
             return Ok(0);
         }

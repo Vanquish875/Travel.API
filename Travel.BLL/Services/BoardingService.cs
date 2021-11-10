@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Interfaces;
 
 namespace Travel.BLL.Services
 {
@@ -40,7 +39,7 @@ namespace Travel.BLL.Services
         public async Task<Boarding> GetBoardingByBoardingId(int boardingId)
         {
             var boarding = await _context.TravelBoardings
-                .Where(i => i.BoardingId == boardingId)
+                .Where(i => i.Id == boardingId)
                 .AsNoTracking()
                 .FirstAsync();
 
@@ -52,7 +51,7 @@ namespace Travel.BLL.Services
             _context.TravelBoardings.Add(boarding);
             await _context.SaveChangesAsync();
 
-            return boarding.BoardingId;
+            return boarding.Id;
         }
 
         public async Task<int> UpdateBoarding(Boarding boarding)
@@ -60,13 +59,13 @@ namespace Travel.BLL.Services
             _context.TravelBoardings.Update(boarding);
             await _context.SaveChangesAsync();
 
-            return boarding.BoardingId;
+            return boarding.Id;
         }
 
         public async Task<int> DeleteBoarding(int boardingId)
         {
             var boarding = await _context.TravelBoardings
-                .Where(i => i.BoardingId == boardingId)
+                .Where(i => i.Id == boardingId)
                 .FirstAsync();
 
             _context.TravelBoardings.Remove(boarding);
