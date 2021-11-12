@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Travel.BLL.Dtos.City;
 using Travel.BLL.Interfaces;
-using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -18,7 +18,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<City>>> GetAllCities()
+        public async Task<ActionResult<IEnumerable<GetCityDto>>> GetAllCities()
         {
             var cities = await _city.GetAllCities();
 
@@ -31,7 +31,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{tripId}")]
-        public async Task<ActionResult<List<City>>> GetCitiesByTrip(int tripId)
+        public async Task<ActionResult<IEnumerable<GetCityDto>>> GetCitiesByTrip(int tripId)
         {
             if(tripId <= 0)
             {
@@ -49,7 +49,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<ActionResult<City>> GetCityByCityId(int cityId)
+        public async Task<ActionResult<GetCityDto>> GetCityByCityId(int cityId)
         {
             if(cityId <= 0)
             {
@@ -67,7 +67,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateCity([FromBody] City city)
+        public async Task<ActionResult<bool>> CreateCity([FromBody] CreateCityDto city)
         {
             if(city == null)
             {
@@ -76,11 +76,11 @@ namespace Travel.API.Controllers
 
             await _city.CreateCity(city);
 
-            return Ok(city.Id);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateCity([FromBody] City city)
+        public async Task<ActionResult<bool>> UpdateCity([FromBody] UpdateCityDto city)
         {
             if(city == null)
             {
@@ -89,11 +89,11 @@ namespace Travel.API.Controllers
 
             await _city.UpdateCity(city);
 
-            return Ok(city.Id);
+            return Ok();
         }
 
         [HttpDelete("{cityId}")]
-        public async Task<ActionResult<int>> DeleteCity(int cityId)
+        public async Task<ActionResult<bool>> DeleteCity(int cityId)
         {
             if(cityId <= 0)
             {
@@ -103,7 +103,7 @@ namespace Travel.API.Controllers
 
             await _city.DeleteCity(cityId);
             
-            return Ok(0);
+            return Ok();
         }
     }
 }

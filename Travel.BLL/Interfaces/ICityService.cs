@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Travel.DAL.Models;
+using Travel.BLL.Dtos.City;
 
 namespace Travel.BLL.Interfaces
 {
     public interface ICityService
     {
-        Task<int> CreateCity(City city);
-        Task<int> DeleteCity(int cityId);
-        Task<List<City>> GetAllCities();
-        Task<List<City>> GetCitiesByTrip(int tripId);
-        Task<City> GetCityByCity(int cityId);
-        Task<int> UpdateCity(City city);
+        Task<bool> CreateCity(CreateCityDto city);
+        Task<bool> DeleteCity(int cityId);
+        Task<IEnumerable<GetCityDto>> GetAllCities();
+        Task<IEnumerable<GetCityDto>> GetCitiesByTrip(int tripId);
+        Task<GetCityDto> GetCityByCity(int cityId);
+        Task<bool> UpdateCity(UpdateCityDto city);
     }
 }

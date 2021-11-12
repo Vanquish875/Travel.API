@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Travel.DAL.Infrastructure;
 using Travel.DAL.Models;
 using Travel.BLL.Interfaces;
+using Travel.BLL.Dtos.Flight;
+using System;
 
 namespace Travel.BLL.Services
 {
@@ -17,52 +19,140 @@ namespace Travel.BLL.Services
             _context = context;
         }
 
-        public async Task<List<Flight>> GetAllFlights()
+        public async Task<IEnumerable<GetFlightDto>> GetAllFlights()
         {
             var flights = await _context.TravelFlights
+                .Select(i => new GetFlightDto
+                {
+                    TripId = i.TripId,
+                    FlightNumber = i.FlightNumber,
+                    AirlineName = i.AirlineName,
+                    DepartureAirportName = i.DepartureAirportName,
+                    ArrivalAirportName = i.ArrivalAirportName,
+                    StartLocation = i.StartLocation,
+                    EndLocation = i.EndLocation,
+                    DepartureTime = i.DepartureTime,
+                    ArrivalTime = i.ArrivalTime,
+                    ConfirmationCode = i.ConfirmationCode,
+                    Notes = i.Notes
+                })
                 .AsNoTracking()
                 .ToListAsync();
 
             return flights;
         }
 
-        public async Task<List<Flight>> GetFlightsByTrip(int id)
+        public async Task<IEnumerable<GetFlightDto>> GetFlightsByTrip(int id)
         {
             var flights = await _context.TravelFlights
                 .Where(i => i.TripId == id)
+                .Select(i => new GetFlightDto
+                {
+                    TripId = i.TripId,
+                    FlightNumber = i.FlightNumber,
+                    AirlineName = i.AirlineName,
+                    DepartureAirportName = i.DepartureAirportName,
+                    ArrivalAirportName = i.ArrivalAirportName,
+                    StartLocation = i.StartLocation,
+                    EndLocation = i.EndLocation,
+                    DepartureTime = i.DepartureTime,
+                    ArrivalTime = i.ArrivalTime,
+                    ConfirmationCode = i.ConfirmationCode,
+                    Notes = i.Notes
+                })
                 .AsNoTracking()
                 .ToListAsync();
 
             return flights;
         }
 
-        public async Task<Flight> GetFlightByFlightID(int id)
+        public async Task<GetFlightDto> GetFlightByFlightID(int id)
         {
             var flight = await _context.TravelFlights
                 .Where(i => i.Id == id)
+                .Select(i => new GetFlightDto
+                {
+                    TripId = i.TripId,
+                    FlightNumber = i.FlightNumber,
+                    AirlineName = i.AirlineName,
+                    DepartureAirportName = i.DepartureAirportName,
+                    ArrivalAirportName = i.ArrivalAirportName,
+                    StartLocation = i.StartLocation,
+                    EndLocation = i.EndLocation,
+                    DepartureTime = i.DepartureTime,
+                    ArrivalTime = i.ArrivalTime,
+                    ConfirmationCode = i.ConfirmationCode,
+                    Notes = i.Notes
+                })
                 .AsNoTracking()
                 .FirstAsync();
 
             return flight;
         }
 
-        public async Task<int> CreateFlight(Flight flight)
+        public async Task<bool> CreateFlight(CreateFlightDto flightDto)
         {
+            if(flightDto == null)
+            {
+                return false;
+            }
+
+            var flight = new Flight
+            {
+                TripId = flightDto.TripId,
+                FlightNumber = flightDto.FlightNumber,
+                AirlineName = flightDto.AirlineName,
+                DepartureAirportName = flightDto.DepartureAirportName,
+                ArrivalAirportName = flightDto.ArrivalAirportName,
+                StartLocation = flightDto.StartLocation,
+                EndLocation = flightDto.EndLocation,
+                DepartureTime = flightDto.DepartureTime,
+                ArrivalTime = flightDto.ArrivalTime,
+                ConfirmationCode = flightDto.ConfirmationCode,
+                Notes = flightDto.Notes,
+                IsDeleted = false,
+                IsEnabled = true,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            };
+
             _context.TravelFlights.Add(flight);
             await _context.SaveChangesAsync();
 
-            return flight.Id;
+            return true;
         }
 
-        public async Task<int> UpdateFlight(Flight flight)
+        public async Task<bool> UpdateFlight(UpdateFlightDto flightDto)
         {
-            _context.TravelFlights.Update(flight);
+            if(flightDto == null)
+            {
+                return false;
+            }
+
+            var flight = await _context.TravelFlights
+                .Where(i => i.Id == flightDto.Id)
+                .FirstAsync();
+
+            flight.TripId = flightDto.TripId;
+            flight.FlightNumber = flightDto.FlightNumber;
+            flight.AirlineName = flightDto.AirlineName;
+            flight.DepartureAirportName = flightDto.DepartureAirportName;
+            flight.ArrivalAirportName = flightDto.ArrivalAirportName;
+            flight.StartLocation = flightDto.StartLocation;
+            flight.EndLocation = flightDto.EndLocation;
+            flight.DepartureTime = flightDto.DepartureTime;
+            flight.ArrivalTime = flightDto.ArrivalTime;
+            flight.ConfirmationCode = flightDto.ConfirmationCode;
+            flight.Notes = flightDto.Notes;
+            flight.ModifiedDate = DateTime.UtcNow;
+
+            //_context.TravelFlights.Update(flight);
             await _context.SaveChangesAsync();
 
-            return flight.Id;
+            return true;
         }
 
-        public async Task<int> DeleteFlight(int id)
+        public async Task<bool> DeleteFlight(int id)
         {
             var flight = await _context.TravelFlights
                 .Where(i => i.Id == id)
@@ -70,13 +160,16 @@ namespace Travel.BLL.Services
 
             if (flight == null)
             {
-                return 0;
+                return false;
             }
 
-            _context.TravelFlights.Remove(flight);
+            flight.IsDeleted = true;
+            flight.IsEnabled = false;
+
+            //_context.TravelFlights.Remove(flight);
             await _context.SaveChangesAsync();
 
-            return flight.Id;
+            return true;
         }
     }
 }

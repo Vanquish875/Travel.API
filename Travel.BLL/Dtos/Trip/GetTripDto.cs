@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Travel.BLL.Dtos.City;
+using Travel.BLL.Dtos.Flight;
 
 namespace Travel.BLL.Dtos.Trip
 {
-    class GetTripDto
+    public class GetTripDto
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public ICollection<GetCityDto> Cities { get; set; }
+        public ICollection<GetFlightDto> Flights { get; set; }
     }
 }

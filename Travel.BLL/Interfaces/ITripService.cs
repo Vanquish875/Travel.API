@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Travel.DAL.Models;
+using Travel.BLL.Dtos.Trip;
 
 namespace Travel.BLL.Interfaces
 {
     public interface ITripService
     {
-        Task<int> CreateTrip(Trip trip);
-        Task<int> DeleteTrip(int id);
-        Task<List<Trip>> GetAllTrips();
-        Task<Trip> GetTripsByID(int id);
-        Task<int> UpdateTrip(Trip trip);
+        Task<bool> CreateTrip(CreateTripDto tripDto);
+        Task<bool> DeleteTrip(int id);
+        Task<IEnumerable<GetTripDto>> GetAllTrips();
+        Task<GetTripDto> GetTripByID(int id);
+        Task<bool> UpdateTrip(UpdateTripDto tripDto);
     }
 }

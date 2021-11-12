@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Travel.BLL.Dtos.Flight;
 using Travel.BLL.Interfaces;
-using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -18,7 +18,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Flight>>> GetAllFlights()
+        public async Task<ActionResult<List<GetFlightDto>>> GetAllFlights()
         {
             var flights = await _flight.GetAllFlights();
 
@@ -26,7 +26,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{tripId}")]
-        public async Task<ActionResult<List<Flight>>> GetFlightsByTrip(int tripId)
+        public async Task<ActionResult<List<GetFlightDto>>> GetFlightsByTrip(int tripId)
         {
             if(tripId <= 0)
             {
@@ -44,7 +44,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{flightId}")]
-        public async Task<ActionResult<Flight>> GetFlightByFlightId(int flightId)
+        public async Task<ActionResult<GetFlightDto>> GetFlightByFlightId(int flightId)
         {
             if(flightId <= 0)
             {
@@ -62,7 +62,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateFlight([FromBody] Flight flight)
+        public async Task<ActionResult<bool>> CreateFlight([FromBody] CreateFlightDto flight)
         {
             if(flight == null)
             {
@@ -71,11 +71,11 @@ namespace Travel.API.Controllers
 
             await _flight.CreateFlight(flight);
 
-            return Ok(flight.Id);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateFlight([FromBody] Flight flight)
+        public async Task<ActionResult<bool>> UpdateFlight([FromBody] UpdateFlightDto flight)
         {
             if(flight == null)
             {
@@ -84,11 +84,11 @@ namespace Travel.API.Controllers
 
             await _flight.UpdateFlight(flight);
 
-            return Ok(flight.Id);
+            return Ok();
         }
 
         [HttpDelete("{flightId}")]
-        public async Task<ActionResult<int>> DeleteFlight(int flightId)
+        public async Task<ActionResult<bool>> DeleteFlight(int flightId)
         {
             if(flightId <= 0)
             {
@@ -97,7 +97,7 @@ namespace Travel.API.Controllers
 
             await _flight.DeleteFlight(flightId);
 
-            return Ok(0);
+            return Ok();
         }
     }
 }

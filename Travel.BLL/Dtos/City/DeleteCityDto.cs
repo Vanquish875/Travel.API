@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Travel.BLL.Dtos.City
+﻿namespace Travel.BLL.Dtos.City
 {
-    class DeleteCityDto
+    public class DeleteCityDto
     {
+        public int Id { get; set; }
     }
 }

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Travel.BLL.Dtos.Trip
+﻿namespace Travel.BLL.Dtos.Trip
 {
-    class DeleteTripDto
+    public class DeleteTripDto
     {
+        public int Id { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Travel.BLL.Dtos.Trip;
 using Travel.BLL.Interfaces;
-using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -18,7 +18,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Trip>>> GetAllTrips()
+        public async Task<ActionResult<IEnumerable<GetTripDto>>> GetAllTrips()
         {
             var trips = await _trip.GetAllTrips();
 
@@ -31,7 +31,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateTrip([FromBody] Trip trip)
+        public async Task<ActionResult<bool>> CreateTrip([FromBody] CreateTripDto trip)
         {
             if(trip == null)
             {
@@ -40,11 +40,11 @@ namespace Travel.API.Controllers
 
             await _trip.CreateTrip(trip);
 
-            return Ok(trip.Id);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateTrip([FromBody] Trip trip)
+        public async Task<ActionResult<int>> UpdateTrip([FromBody] UpdateTripDto trip)
         {
             if(trip == null)
             {
@@ -57,14 +57,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{tripId}")]
-        public async Task<ActionResult<Trip>> GetTripByID(int tripId)
+        public async Task<ActionResult<GetTripDto>> GetTripByID(int tripId)
         {
             if(tripId <= 0)
             {
                 return BadRequest();
             }
 
-            var trip = await _trip.GetTripsByID(tripId);
+            var trip = await _trip.GetTripByID(tripId);
 
             if(trip == null)
             {
