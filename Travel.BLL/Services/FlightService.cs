@@ -85,7 +85,7 @@ namespace Travel.BLL.Services
                     Notes = i.Notes
                 })
                 .AsNoTracking()
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return flight;
         }
@@ -131,7 +131,12 @@ namespace Travel.BLL.Services
 
             var flight = await _context.TravelFlights
                 .Where(i => i.Id == flightDto.Id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
+
+            if(flight == null)
+            {
+                return false;
+            }
 
             flight.TripId = flightDto.TripId;
             flight.FlightNumber = flightDto.FlightNumber;
@@ -146,7 +151,6 @@ namespace Travel.BLL.Services
             flight.Notes = flightDto.Notes;
             flight.ModifiedDate = DateTime.UtcNow;
 
-            //_context.TravelFlights.Update(flight);
             await _context.SaveChangesAsync();
 
             return true;
@@ -156,7 +160,7 @@ namespace Travel.BLL.Services
         {
             var flight = await _context.TravelFlights
                 .Where(i => i.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             if (flight == null)
             {
@@ -166,7 +170,6 @@ namespace Travel.BLL.Services
             flight.IsDeleted = true;
             flight.IsEnabled = false;
 
-            //_context.TravelFlights.Remove(flight);
             await _context.SaveChangesAsync();
 
             return true;

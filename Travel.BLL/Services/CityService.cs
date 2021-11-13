@@ -67,7 +67,7 @@ namespace Travel.BLL.Services
                     EndDate = i.EndDate
                 })
                 .AsNoTracking()
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return city;
         }
@@ -107,7 +107,12 @@ namespace Travel.BLL.Services
 
             var city = await _context.TravelCities
                 .Where(i => i.Id == cityDto.Id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
+
+            if(city == null)
+            {
+                return false;
+            }
 
             city.TripId = cityDto.TripId;
             city.CityName = cityDto.CityName;
@@ -116,7 +121,6 @@ namespace Travel.BLL.Services
             city.EndDate = cityDto.EndDate;
             city.ModifiedDate = DateTime.UtcNow;
 
-            //_context.TravelCities.Update(city);
             await _context.SaveChangesAsync();
 
             return true;
@@ -126,7 +130,7 @@ namespace Travel.BLL.Services
         {
             var city = await _context.TravelCities
                 .Where(i => i.Id == cityId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             if(city == null)
             {
@@ -136,7 +140,6 @@ namespace Travel.BLL.Services
             city.IsDeleted = true;
             city.IsEnabled = false;
 
-            //_context.TravelCities.Remove(city);
             await _context.SaveChangesAsync();
 
             return true;

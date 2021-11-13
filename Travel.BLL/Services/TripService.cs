@@ -54,6 +54,11 @@ namespace Travel.BLL.Services
 
         public async Task<bool> CreateTrip(CreateTripDto tripDto)
         {
+            if(tripDto == null)
+            {
+                return false;
+            }
+
             var trip = new Trip
             {
                 Name = tripDto.Name,
@@ -75,7 +80,7 @@ namespace Travel.BLL.Services
         {
             var trip = await _context.TravelTrips
                 .Where(i => i.Id == tripDto.Id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             if(trip == null)
             {
@@ -86,7 +91,6 @@ namespace Travel.BLL.Services
             trip.StartDate = tripDto.StartDate;
             trip.EndDate = tripDto.EndDate;
 
-            //_context.TravelTrips.Update(trip);
             await _context.SaveChangesAsync();
 
             return true;
@@ -96,7 +100,7 @@ namespace Travel.BLL.Services
         {
             var trip = await _context.TravelTrips
                 .Where(i => i.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             if (trip == null)
             {
@@ -106,7 +110,6 @@ namespace Travel.BLL.Services
             trip.IsDeleted = true;
             trip.IsEnabled = false;
 
-            //_context.TravelTrips.(trip);
             await _context.SaveChangesAsync();
 
             return true;

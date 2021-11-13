@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Travel.BLL.Dtos.Activity
 {
-    class CreateActivityDto
+    public class CreateActivityDto
     {
+        public int CityId { get; set; }
+        public string ActivityName { get; set; }
+        public string Address1 { get; set; }
+        public DateTime ActivityDateTime { get; set; }
+        public int CurrentActivityType { get; set; }
     }
 }

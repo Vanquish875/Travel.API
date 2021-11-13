@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Travel.BLL.Dtos.Activity;
 using Travel.BLL.Interfaces;
-using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -18,7 +18,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetAllActivities()
+        public async Task<ActionResult<IEnumerable<GetActivityDto>>> GetAllActivities()
         {
             var activities = await _activity.GetAllActivities();
 
@@ -31,7 +31,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<ActionResult<List<Activity>>> GetActivitiesByCity(int cityId)
+        public async Task<ActionResult<IEnumerable<GetActivityDto>>> GetActivitiesByCity(int cityId)
         {
             if(cityId <= 0)
             {
@@ -49,7 +49,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateActivity([FromBody] Activity activity)
+        public async Task<ActionResult<bool>> CreateActivity([FromBody] CreateActivityDto activity)
         {
             if(activity == null)
             {
@@ -58,11 +58,11 @@ namespace Travel.API.Controllers
 
             await _activity.CreateActivity(activity);
             
-            return Ok(activity.Id);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateActivity([FromBody] Activity activity)
+        public async Task<ActionResult<bool>> UpdateActivity([FromBody] UpdateActivityDto activity)
         {
             if(activity == null)
             {
@@ -71,11 +71,11 @@ namespace Travel.API.Controllers
 
             await _activity.UpdateActivity(activity);
 
-            return Ok(activity.Id);
+            return Ok();
         }
 
         [HttpDelete("{activityId}")]
-        public async Task<ActionResult<int>> DeleteActivity(int activityId)
+        public async Task<ActionResult<bool>> DeleteActivity(int activityId)
         {
             if(activityId <= 0)
             {
@@ -84,7 +84,7 @@ namespace Travel.API.Controllers
 
             await _activity.DeleteActivity(activityId);
             
-            return Ok(0);
+            return Ok();
         }
     }
 }

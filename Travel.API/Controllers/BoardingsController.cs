@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Travel.BLL.Dtos.Boarding;
 using Travel.BLL.Interfaces;
-using Travel.DAL.Models;
 
 namespace Travel.API.Controllers
 {
@@ -18,7 +18,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Boarding>>> GetAllBoardings()
+        public async Task<ActionResult<IEnumerable<GetBoardingDto>>> GetAllBoardings()
         {
             var boardings = await _boarding.GetAllBoardings();
 
@@ -31,7 +31,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<ActionResult<List<Boarding>>> GetBoardingsByCityId(int cityId)
+        public async Task<ActionResult<IEnumerable<GetBoardingDto>>> GetBoardingsByCityId(int cityId)
         {
             if(cityId <= 0)
             {
@@ -49,7 +49,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{boardingId}")]
-        public async Task<ActionResult<Boarding>> GetBoardingByBoardingId(int boardingId)
+        public async Task<ActionResult<GetBoardingDto>> GetBoardingByBoardingId(int boardingId)
         {
             if(boardingId <= 0)
             {
@@ -67,7 +67,7 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateBoarding([FromBody] Boarding boarding)
+        public async Task<ActionResult<bool>> CreateBoarding([FromBody] CreateBoardingDto boarding)
         {
             if(boarding == null)
             {
@@ -76,11 +76,11 @@ namespace Travel.API.Controllers
 
             await _boarding.CreateBoarding(boarding);
 
-            return Ok(boarding.Id);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateBoarding([FromBody] Boarding boarding)
+        public async Task<ActionResult<bool>> UpdateBoarding([FromBody] UpdateBoardingDto boarding)
         {
             if(boarding == null)
             {
@@ -89,11 +89,11 @@ namespace Travel.API.Controllers
 
             await _boarding.UpdateBoarding(boarding);
 
-            return Ok(boarding.Id);
+            return Ok();
         }
 
         [HttpDelete("{boardingId}")]
-        public async Task<ActionResult<int>> DeleteBoarding(int boardingId)
+        public async Task<ActionResult<bool>> DeleteBoarding(int boardingId)
         {
             if(boardingId <= 0)
             {
@@ -103,7 +103,7 @@ namespace Travel.API.Controllers
 
             await _boarding.DeleteBoarding(boardingId);
 
-            return Ok(0);
+            return Ok();
         }
     }
 }

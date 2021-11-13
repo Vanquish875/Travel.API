@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Travel.DAL.Models;
+using Travel.BLL.Dtos.Activity;
 
 namespace Travel.BLL.Interfaces
 {
     public interface IActivityService
     {
-        Task<int> CreateActivity(Activity activity);
-        Task<int> DeleteActivity(int activityId);
-        Task<List<Activity>> GetActivitiesByCity(int cityId);
-        Task<Activity> GetActivityByActivityId(int activityId);
-        Task<List<Activity>> GetAllActivities();
-        Task<int> UpdateActivity(Activity activity);
+        Task<bool> CreateActivity(CreateActivityDto activityDto);
+        Task<bool> DeleteActivity(int activityId);
+        Task<IEnumerable<GetActivityDto>> GetActivitiesByCity(int cityId);
+        Task<GetActivityDto> GetActivityByActivityId(int activityId);
+        Task<IEnumerable<GetActivityDto>> GetAllActivities();
+        Task<bool> UpdateActivity(UpdateActivityDto activityDto);
     }
 }
