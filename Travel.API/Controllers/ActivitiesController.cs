@@ -35,7 +35,7 @@ namespace Travel.API.Controllers
         {
             if(cityId <= 0)
             {
-                return BadRequest();
+                return BadRequest("The ID needs to be correct.");
             }
 
             var activities = await _activity.GetActivitiesByCity(cityId);
