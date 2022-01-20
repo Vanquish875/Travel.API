@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
-using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Dtos.Boarding;
+using Travel.BLL.Interfaces;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class BoardingsController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly IBoardingService _boarding;
 
-        public BoardingsController(TravelContext context)
+        public BoardingsController(IBoardingService boarding)
         {
-            _context = context;
+            _boarding = boarding;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Boarding>>> GetAllBoardings()
+        public async Task<ActionResult<IEnumerable<GetBoardingDto>>> GetAllBoardings()
         {
-            var boardings = await _context.TravelBoardings.ToListAsync();
+            var boardings = await _boarding.GetAllBoardings();
 
             if(boardings == null)
             {
@@ -33,14 +31,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<ActionResult<List<Boarding>>> GetBoardingsByCityId(int cityId)
+        public async Task<ActionResult<IEnumerable<GetBoardingDto>>> GetBoardingsByCityId(int cityId)
         {
             if(cityId <= 0)
             {
                 return BadRequest();
             }
 
-            var boardings = await _context.TravelBoardings.Where(b => b.CityId == cityId).ToListAsync();
+            var boardings = await _boarding.GetBoardingsByCity(cityId);
 
             if(boardings == null)
             {
@@ -51,14 +49,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{boardingId}")]
-        public async Task<ActionResult<Boarding>> GetBoardingByBoardingId(int boardingId)
+        public async Task<ActionResult<GetBoardingDto>> GetBoardingByBoardingId(int boardingId)
         {
             if(boardingId <= 0)
             {
                 return BadRequest();
             }
 
-            var boarding = await _context.TravelBoardings.Where(i => i.BoardingId == boardingId).FirstOrDefaultAsync();
+            var boarding = await _boarding.GetBoardingByBoardingId(boardingId);
 
             if(boarding == null)
             {
@@ -69,52 +67,43 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateBoarding([FromBody] Boarding boarding)
+        public async Task<ActionResult<bool>> CreateBoarding([FromBody] CreateBoardingDto boarding)
         {
             if(boarding == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelBoardings.Add(boarding);
-            await _context.SaveChangesAsync();
+            await _boarding.CreateBoarding(boarding);
 
-            return Ok(boarding.BoardingId);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateBoarding([FromBody] Boarding boarding)
+        public async Task<ActionResult<bool>> UpdateBoarding([FromBody] UpdateBoardingDto boarding)
         {
             if(boarding == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelBoardings.Update(boarding);
-            await _context.SaveChangesAsync();
+            await _boarding.UpdateBoarding(boarding);
 
-            return Ok(boarding.BoardingId);
+            return Ok();
         }
 
         [HttpDelete("{boardingId}")]
-        public async Task<ActionResult<int>> DeleteBoarding(int boardingId)
+        public async Task<ActionResult<bool>> DeleteBoarding(int boardingId)
         {
             if(boardingId <= 0)
             {
                 return BadRequest();
             }
 
-            var boarding = await _context.TravelBoardings.Where(i => i.BoardingId == boardingId).FirstOrDefaultAsync();
 
-            if(boarding == null)
-            {
-                return NotFound();
-            }
+            await _boarding.DeleteBoarding(boardingId);
 
-            _context.TravelBoardings.Remove(boarding);
-            await _context.SaveChangesAsync();
-
-            return Ok(0);
+            return Ok();
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
-using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Dtos.City;
+using Travel.BLL.Interfaces;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class CitiesController : ControllerBase
     {
-        public readonly TravelContext _context;
+        public readonly ICityService _city;
 
-        public CitiesController(TravelContext context)
+        public CitiesController(ICityService city)
         {
-            _context = context;
+            _city = city;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<City>>> GetAllCities()
+        public async Task<ActionResult<IEnumerable<GetCityDto>>> GetAllCities()
         {
-            var cities = await _context.TravelCities.ToListAsync();
+            var cities = await _city.GetAllCities();
 
             if(cities == null)
             {
@@ -33,14 +31,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{tripId}")]
-        public async Task<ActionResult<List<City>>> GetCitiesByTrip(int tripId)
+        public async Task<ActionResult<IEnumerable<GetCityDto>>> GetCitiesByTrip(int tripId)
         {
             if(tripId <= 0)
             {
                 return BadRequest();
             }
 
-            var cities = await _context.TravelCities.Where(c => c.TripId == tripId).ToListAsync();
+            var cities = await _city.GetCitiesByTrip(tripId);
 
             if(cities == null)
             {
@@ -51,14 +49,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<ActionResult<City>> GetCityByCityId(int cityId)
+        public async Task<ActionResult<GetCityDto>> GetCityByCityId(int cityId)
         {
             if(cityId <= 0)
             {
                 return BadRequest();
             }
 
-            var city = await _context.TravelCities.Where(i => i.CityId == cityId).FirstOrDefaultAsync();
+            var city = await _city.GetCityByCity(cityId);
 
             if(city == null)
             {
@@ -69,53 +67,43 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateCity([FromBody] City city)
+        public async Task<ActionResult<bool>> CreateCity([FromBody] CreateCityDto city)
         {
             if(city == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelCities.Add(city);
-            await _context.SaveChangesAsync();
+            await _city.CreateCity(city);
 
-            return Ok(city.CityId);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateCity([FromBody] City city)
+        public async Task<ActionResult<bool>> UpdateCity([FromBody] UpdateCityDto city)
         {
             if(city == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelCities.Update(city);
-            await _context.SaveChangesAsync();
+            await _city.UpdateCity(city);
 
-            return Ok(city.CityId);
+            return Ok();
         }
 
         [HttpDelete("{cityId}")]
-        public async Task<ActionResult<int>> DeleteCity(int cityId)
+        public async Task<ActionResult<bool>> DeleteCity(int cityId)
         {
             if(cityId <= 0)
             {
                 return BadRequest();
             }
 
-            var city = await _context.TravelCities.Where(i => i.CityId == cityId).FirstOrDefaultAsync();
-            
-            if(city == null)
-            {
-                return NotFound();
-            }
 
-
-            _context.TravelCities.Remove(city);
-            await _context.SaveChangesAsync();
+            await _city.DeleteCity(cityId);
             
-            return Ok(0);
+            return Ok();
         }
     }
 }

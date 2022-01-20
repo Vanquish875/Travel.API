@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Travel.API.Model;
-using System.Linq;
+using Travel.BLL.Dtos.Flight;
+using Travel.BLL.Interfaces;
 
 namespace Travel.API.Controllers
 {
@@ -12,30 +10,30 @@ namespace Travel.API.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly IFlightService _flight;
 
-        public FlightsController(TravelContext context)
+        public FlightsController(IFlightService flight)
         {
-            _context = context;
+            _flight = flight;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Flight>>> GetAllFlights()
+        public async Task<ActionResult<List<GetFlightDto>>> GetAllFlights()
         {
-            var flights = await _context.TravelFlights.ToListAsync();
+            var flights = await _flight.GetAllFlights();
 
             return Ok(flights);
         }
 
         [HttpGet("{tripId}")]
-        public async Task<ActionResult<List<Flight>>> GetFlightsByTrip(int tripId)
+        public async Task<ActionResult<List<GetFlightDto>>> GetFlightsByTrip(int tripId)
         {
             if(tripId <= 0)
             {
                 return BadRequest();
             }
 
-            var flights = await _context.TravelFlights.Where(i => i.TripId == tripId).ToListAsync();
+            var flights = await _flight.GetFlightsByTrip(tripId);
 
             if(flights == null)
             {
@@ -46,14 +44,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{flightId}")]
-        public async Task<ActionResult<Flight>> GetFlightByFlightId(int flightId)
+        public async Task<ActionResult<GetFlightDto>> GetFlightByFlightId(int flightId)
         {
             if(flightId <= 0)
             {
                 return BadRequest();
             }
 
-            var flight = await _context.TravelFlights.Where(i => i.FlightId == flightId).FirstOrDefaultAsync();
+            var flight = await _flight.GetFlightByFlightID(flightId);
 
             if(flight == null)
             {
@@ -64,52 +62,42 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateFlight([FromBody] Flight flight)
+        public async Task<ActionResult<bool>> CreateFlight([FromBody] CreateFlightDto flight)
         {
             if(flight == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelFlights.Add(flight);
-            await _context.SaveChangesAsync();
+            await _flight.CreateFlight(flight);
 
-            return Ok(flight.FlightId);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateFlight([FromBody] Flight flight)
+        public async Task<ActionResult<bool>> UpdateFlight([FromBody] UpdateFlightDto flight)
         {
             if(flight == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelFlights.Add(flight);
-            await _context.SaveChangesAsync();
+            await _flight.UpdateFlight(flight);
 
-            return Ok(flight.FlightId);
+            return Ok();
         }
 
         [HttpDelete("{flightId}")]
-        public async Task<ActionResult<int>> DeleteFlight(int flightId)
+        public async Task<ActionResult<bool>> DeleteFlight(int flightId)
         {
             if(flightId <= 0)
             {
                 return BadRequest();
             }
 
-            var flight = await _context.TravelFlights.Where(i => i.FlightId == flightId).FirstOrDefaultAsync();
+            await _flight.DeleteFlight(flightId);
 
-            if(flight == null)
-            {
-                return NotFound();
-            }
-
-            _context.TravelFlights.Remove(flight);
-            await _context.SaveChangesAsync();
-
-            return Ok(0);
+            return Ok();
         }
     }
 }

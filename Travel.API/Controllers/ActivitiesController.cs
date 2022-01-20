@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Travel.API.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Travel.API.Model;
+using Travel.BLL.Dtos.Activity;
+using Travel.BLL.Interfaces;
 
 namespace Travel.API.Controllers
 {
@@ -12,17 +10,17 @@ namespace Travel.API.Controllers
     [ApiController]
     public class ActivitiesController : ControllerBase
     {
-        private readonly TravelContext _context;
+        private readonly IActivityService _activity;
 
-        public ActivitiesController(TravelContext context)
+        public ActivitiesController(IActivityService activity)
         {
-            _context = context;
+            _activity = activity;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetAllActivities()
+        public async Task<ActionResult<IEnumerable<GetActivityDto>>> GetAllActivities()
         {
-            var activities = await _context.TravelActivities.ToListAsync();
+            var activities = await _activity.GetAllActivities();
 
             if(activities == null)
             {
@@ -33,14 +31,14 @@ namespace Travel.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<ActionResult<List<Activity>>> GetActivitiesByCity(int cityId)
+        public async Task<ActionResult<IEnumerable<GetActivityDto>>> GetActivitiesByCity(int cityId)
         {
             if(cityId <= 0)
             {
-                return BadRequest();
+                return BadRequest("The ID needs to be correct.");
             }
 
-            var activities = await _context.TravelActivities.Where(a => a.CityId == cityId).ToListAsync();
+            var activities = await _activity.GetActivitiesByCity(cityId);
 
             if(activities == null)
             {
@@ -51,52 +49,42 @@ namespace Travel.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateActivity([FromBody] Activity activity)
+        public async Task<ActionResult<bool>> CreateActivity([FromBody] CreateActivityDto activity)
         {
             if(activity == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelActivities.Add(activity);
-            await _context.SaveChangesAsync();
-
-            return Ok(activity.ActivityId);
+            await _activity.CreateActivity(activity);
+            
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateActivity([FromBody] Activity activity)
+        public async Task<ActionResult<bool>> UpdateActivity([FromBody] UpdateActivityDto activity)
         {
             if(activity == null)
             {
                 return BadRequest();
             }
 
-            _context.TravelActivities.Update(activity);
-            await _context.SaveChangesAsync();
+            await _activity.UpdateActivity(activity);
 
-            return Ok(activity.ActivityId);
+            return Ok();
         }
 
         [HttpDelete("{activityId}")]
-        public async Task<ActionResult<int>> DeleteActivity(int activityId)
+        public async Task<ActionResult<bool>> DeleteActivity(int activityId)
         {
             if(activityId <= 0)
             {
                 return BadRequest();
             }
 
-            var activity = await _context.TravelActivities.Where(i => i.ActivityId == activityId).FirstOrDefaultAsync();
-
-            if(activity == null)
-            {
-                return NotFound();
-            }
-
-            _context.TravelActivities.Remove(activity);
-            await _context.SaveChangesAsync();
-
-            return Ok(0);
+            await _activity.DeleteActivity(activityId);
+            
+            return Ok();
         }
     }
 }

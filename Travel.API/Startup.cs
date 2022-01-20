@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Travel.API.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using Travel.BLL.Interfaces;
+using Travel.BLL.Services;
+using Travel.DAL.Infrastructure;
 
 namespace Travel.API
 {
@@ -24,6 +26,11 @@ namespace Travel.API
             services.AddControllers();
             services.AddDbContext<TravelContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IActivityService, ActivityService>();
+            services.AddTransient<IBoardingService, BoardingService>();
+            services.AddTransient<ICityService, CityService>();
+            services.AddTransient<IFlightService, FlightService>();
+            services.AddTransient<ITripService, TripService>();
 
             //services.AddSwaggerGen(c =>
             //{
