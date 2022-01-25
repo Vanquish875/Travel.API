@@ -1,15 +1,31 @@
 import React, { Component } from 'react';
+import { Trips } from '/components/Trips;
+import { getAllTrips, createTrip } from './services/TripService'
+import CreateTrip from './componenets/CreateTrip'
 
 export default class App extends Component {
-    static displayName = App.name;
-
-    constructor(props) {
-        super(props);
-        this.state = { forecasts: [], loading: true };
+    state = {
+        trip: {},
+        trips: []
     }
 
-    componentDidMount() {
-        this.populateWeatherData();
+    //componentDidMount() {
+    //    this.populateWeatherData();
+    //}
+
+    createTrip = (e) => {
+        createTrip(this.state.trip)
+            .then(response => {
+                console.log(response);
+            });
+    }
+
+    getAllTrips = () => {
+        getAllTrips()
+            .then(trips => {
+                console.log(trips)
+                this.setState({ trips: trips, numberOfTrips: trips.length })
+            });
     }
 
     static renderForecastsTable(forecasts) {
