@@ -21,6 +21,7 @@ namespace TravelUnitTests
                 .ReturnsAsync((GetTripDto)null);
 
             var controller = new TripsController(serviceStub.Object);
+
             // Act
             var result = await controller.GetTripByID(1000);
 
@@ -36,6 +37,7 @@ namespace TravelUnitTests
                 .ReturnsAsync((GetTripDto)null);
 
             var controller = new TripsController(serviceStub.Object);
+
             // Act
             var result = await controller.GetTripByID(0);
 
