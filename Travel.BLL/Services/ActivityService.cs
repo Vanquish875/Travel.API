@@ -57,7 +57,7 @@ namespace Travel.BLL.Services
         public async Task<GetActivityDto> GetActivityByActivityId(int activityId)
         {
             var activity = await _context.TravelActivities
-                .Where(i => i.Id == activityId)
+                .Where(i => i.ActivityId == activityId)
                 .Select(i => new GetActivityDto
                 {
                     CityId = i.CityId,
@@ -101,7 +101,7 @@ namespace Travel.BLL.Services
         public async Task<bool> UpdateActivity(UpdateActivityDto activityDto)
         {
             var activity = await _context.TravelActivities
-                .Where(i => i.Id == activityDto.Id)
+                .Where(i => i.ActivityId == activityDto.Id)
                 .FirstOrDefaultAsync();
 
             if(activity == null)

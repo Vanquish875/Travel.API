@@ -4,6 +4,7 @@ namespace Travel.DAL.Models
 {
     public class Flight : BaseModel
     {
+        public int FlightId { get; set; }
         public int TripId { get; set; }
         public int FlightNumber { get; set; }
         public string AirlineName { get; set; }

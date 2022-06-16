@@ -4,6 +4,7 @@ namespace Travel.DAL.Models
 {
     public class Boarding : BaseModel
     {
+        public int BoardingId { get; set; }
         public int CityId { get; set; }
         public string BoardingName { get; set; }
         public string Address1 { get; set; }
