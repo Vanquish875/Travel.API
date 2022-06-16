@@ -24,7 +24,7 @@ namespace Travel.BLL.Services
             var boardings = await _context.TravelBoardings
                 .Select(i => new GetBoardingDto
                 {
-                    Id = i.Id,
+                    Id = i.BoardingId,
                     CityId = i.CityId,
                     BoardingName = i.BoardingName,
                     Address1 = i.Address1,
@@ -45,7 +45,7 @@ namespace Travel.BLL.Services
                 .Where(i => i.CityId == cityId)
                 .Select(i => new GetBoardingDto
                 {
-                    Id = i.Id,
+                    Id = i.BoardingId,
                     CityId = i.CityId,
                     BoardingName = i.BoardingName,
                     Address1 = i.Address1,
@@ -63,10 +63,10 @@ namespace Travel.BLL.Services
         public async Task<GetBoardingDto> GetBoardingByBoardingId(int boardingId)
         {
             var boarding = await _context.TravelBoardings
-                .Where(i => i.Id == boardingId)
+                .Where(i => i.BoardingId == boardingId)
                 .Select(i => new GetBoardingDto
                 {
-                    Id = i.Id,
+                    Id = i.BoardingId,
                     CityId = i.CityId,
                     BoardingName = i.BoardingName,
                     Address1 = i.Address1,
@@ -136,7 +136,7 @@ namespace Travel.BLL.Services
         public async Task<bool> DeleteBoarding(int boardingId)
         {
             var boarding = await _context.TravelBoardings
-                .Where(i => i.Id == boardingId)
+                .Where(i => i.BoardingId == boardingId)
                 .FirstOrDefaultAsync();
 
             if(boarding == null)

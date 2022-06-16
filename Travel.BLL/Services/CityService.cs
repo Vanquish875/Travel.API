@@ -57,7 +57,7 @@ namespace Travel.BLL.Services
         public async Task<GetCityDto> GetCityByCity(int cityId)
         {
             var city = await _context.TravelCities
-                .Where(i => i.Id == cityId)
+                .Where(i => i.CityId == cityId)
                 .Select(i => new GetCityDto
                 {
                     TripId = i.TripId,
@@ -106,7 +106,7 @@ namespace Travel.BLL.Services
             }
 
             var city = await _context.TravelCities
-                .Where(i => i.Id == cityDto.Id)
+                .Where(i => i.CityId == cityDto.Id)
                 .FirstOrDefaultAsync();
 
             if(city == null)
@@ -129,7 +129,7 @@ namespace Travel.BLL.Services
         public async Task<bool> DeleteCity(int cityId)
         {
             var city = await _context.TravelCities
-                .Where(i => i.Id == cityId)
+                .Where(i => i.CityId == cityId)
                 .FirstOrDefaultAsync();
 
             if(city == null)

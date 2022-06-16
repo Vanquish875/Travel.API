@@ -124,7 +124,7 @@ namespace Travel.BLL.Services
         public async Task<bool> DeleteActivity(int activityId)
         {
             var activity = await _context.TravelActivities
-                .Where(i => i.Id == activityId)
+                .Where(i => i.ActivityId == activityId)
                 .FirstOrDefaultAsync();
 
             if(activity == null)

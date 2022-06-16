@@ -24,7 +24,7 @@ namespace Travel.BLL.Services
             var trips = await _context.TravelTrips
                 .Select(i => new GetTripDto
                 {
-                    Id = i.Id,
+                    Id = i.TripId,
                     Name = i.Name,
                     StartDate = i.StartDate,
                     EndDate = i.EndDate
@@ -38,10 +38,10 @@ namespace Travel.BLL.Services
         public async Task<GetTripDto> GetTripByID(int id)
         {
             var trip = await _context.TravelTrips
-                .Where(i => i.Id == id)
+                .Where(i => i.TripId == id)
                 .Select(i => new GetTripDto
                 {
-                    Id = i.Id,
+                    Id = i.TripId,
                     Name = i.Name,
                     StartDate = i.StartDate,
                     EndDate = i.EndDate
@@ -79,7 +79,7 @@ namespace Travel.BLL.Services
         public async Task<bool> UpdateTrip(UpdateTripDto tripDto)
         {
             var trip = await _context.TravelTrips
-                .Where(i => i.Id == tripDto.Id)
+                .Where(i => i.TripId == tripDto.Id)
                 .FirstOrDefaultAsync();
 
             if(trip == null)
@@ -99,7 +99,7 @@ namespace Travel.BLL.Services
         public async Task<bool> DeleteTrip(int id)
         {
             var trip = await _context.TravelTrips
-                .Where(i => i.Id == id)
+                .Where(i => i.TripId == id)
                 .FirstOrDefaultAsync();
 
             if (trip == null)

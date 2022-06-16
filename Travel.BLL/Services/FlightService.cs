@@ -69,7 +69,7 @@ namespace Travel.BLL.Services
         public async Task<GetFlightDto> GetFlightByFlightID(int id)
         {
             var flight = await _context.TravelFlights
-                .Where(i => i.Id == id)
+                .Where(i => i.FlightId == id)
                 .Select(i => new GetFlightDto
                 {
                     TripId = i.TripId,
@@ -130,7 +130,7 @@ namespace Travel.BLL.Services
             }
 
             var flight = await _context.TravelFlights
-                .Where(i => i.Id == flightDto.Id)
+                .Where(i => i.FlightId == flightDto.Id)
                 .FirstOrDefaultAsync();
 
             if(flight == null)
@@ -159,7 +159,7 @@ namespace Travel.BLL.Services
         public async Task<bool> DeleteFlight(int id)
         {
             var flight = await _context.TravelFlights
-                .Where(i => i.Id == id)
+                .Where(i => i.FlightId == id)
                 .FirstOrDefaultAsync();
 
             if (flight == null)
