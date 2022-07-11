@@ -22,6 +22,7 @@ namespace Travel.BLL.Services
         public async Task<IEnumerable<GetCityDto>> GetAllCities()
         {
             var cities = await _context.TravelCities
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetCityDto
                 {
                     TripId = i.TripId,
@@ -39,6 +40,7 @@ namespace Travel.BLL.Services
         public async Task<IEnumerable<GetCityDto>> GetCitiesByTrip(int tripId)
         {
             var cities = await _context.TravelCities
+                .Where(i => i.IsDeleted == false)
                 .Where(i => i.TripId == tripId)
                 .Select(i => new GetCityDto
                 {
@@ -58,6 +60,7 @@ namespace Travel.BLL.Services
         {
             var city = await _context.TravelCities
                 .Where(i => i.CityId == cityId)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetCityDto
                 {
                     TripId = i.TripId,

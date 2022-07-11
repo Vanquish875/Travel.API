@@ -22,6 +22,7 @@ namespace Travel.BLL.Services
         public async Task<IEnumerable<GetFlightDto>> GetAllFlights()
         {
             var flights = await _context.TravelFlights
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetFlightDto
                 {
                     TripId = i.TripId,
@@ -46,6 +47,7 @@ namespace Travel.BLL.Services
         {
             var flights = await _context.TravelFlights
                 .Where(i => i.TripId == id)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetFlightDto
                 {
                     TripId = i.TripId,
@@ -70,6 +72,7 @@ namespace Travel.BLL.Services
         {
             var flight = await _context.TravelFlights
                 .Where(i => i.FlightId == id)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetFlightDto
                 {
                     TripId = i.TripId,

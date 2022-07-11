@@ -22,6 +22,7 @@ namespace Travel.BLL.Services
         public async Task<IEnumerable<GetActivityDto>> GetAllActivities()
         {
             var activities = await _context.TravelActivities
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetActivityDto
                 {
                     CityId = i.CityId,
@@ -40,6 +41,7 @@ namespace Travel.BLL.Services
         {
             var activities = await _context.TravelActivities
                 .Where(i => i.CityId == cityId)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetActivityDto
                 {
                     CityId = i.CityId,
@@ -58,6 +60,7 @@ namespace Travel.BLL.Services
         {
             var activity = await _context.TravelActivities
                 .Where(i => i.ActivityId == activityId)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetActivityDto
                 {
                     CityId = i.CityId,
