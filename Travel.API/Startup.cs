@@ -26,11 +26,11 @@ namespace Travel.API
             services.AddControllers();
             services.AddDbContext<TravelContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<IActivityService, ActivityService>();
-            services.AddTransient<IBoardingService, BoardingService>();
-            services.AddTransient<ICityService, CityService>();
-            services.AddTransient<IFlightService, FlightService>();
-            services.AddTransient<ITripService, TripService>();
+            services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IBoardingService, BoardingService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IFlightService, FlightService>();
+            services.AddScoped<ITripService, TripService>();
 
             //services.AddSwaggerGen(c =>
             //{
