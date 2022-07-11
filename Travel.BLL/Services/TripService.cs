@@ -22,6 +22,7 @@ namespace Travel.BLL.Services
         public async Task<IEnumerable<GetTripDto>> GetAllTrips()
         {
             var trips = await _context.TravelTrips
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetTripDto
                 {
                     Id = i.TripId,
@@ -39,6 +40,7 @@ namespace Travel.BLL.Services
         {
             var trip = await _context.TravelTrips
                 .Where(i => i.TripId == id)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetTripDto
                 {
                     Id = i.TripId,

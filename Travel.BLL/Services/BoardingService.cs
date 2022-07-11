@@ -22,6 +22,7 @@ namespace Travel.BLL.Services
         public async Task<IEnumerable<GetBoardingDto>> GetAllBoardings()
         {
             var boardings = await _context.TravelBoardings
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetBoardingDto
                 {
                     Id = i.BoardingId,
@@ -43,6 +44,7 @@ namespace Travel.BLL.Services
         {
             var boardings = await _context.TravelBoardings
                 .Where(i => i.CityId == cityId)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetBoardingDto
                 {
                     Id = i.BoardingId,
@@ -64,6 +66,7 @@ namespace Travel.BLL.Services
         {
             var boarding = await _context.TravelBoardings
                 .Where(i => i.BoardingId == boardingId)
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new GetBoardingDto
                 {
                     Id = i.BoardingId,
